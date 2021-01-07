@@ -29,12 +29,13 @@ router.post('/', (req, res, next) => {
               width: 0
             }
 
-          },
-          firstSimple: {
-            speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
-            text: ""
           }
         }
+        response.prompt.firstSimple = {
+          speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
+          text: ""
+        }
+
         res.status(200).json(response)
 
       } else if (req.body.handler.name === 'searchingredient') {
@@ -51,12 +52,11 @@ router.post('/', (req, res, next) => {
               url: "https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg",
               width: 0
             }
-
-          },
-          firstSimple: {
-            speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
-            text: ""
           }
+        }
+        response.prompt.firstSimple = {
+          speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
+          text: ""
         }
         res.status(200).json(response)
 
