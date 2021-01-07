@@ -1,0 +1,25 @@
+{
+  "name": "bartender",
+  "version": "1.0.0",
+  "description": "Bartender app API",
+  "main": "index.js",
+  "author": "Lourenco",
+  "license": "ISC",
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "DEBUG=bartender:* nodemon ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
