@@ -155,7 +155,7 @@ router.post('/', (req, res, next) => {
             }
 
             response.prompt.firstSimple = {
-              speech: 'The ingredients are: ' + ingredients,
+              speech: 'The ingredients are: ' + ingredients + ".",
               text: ""
             }
     
