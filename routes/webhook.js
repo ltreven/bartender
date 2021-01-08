@@ -17,54 +17,105 @@ router.post('/', (req, res, next) => {
       if (req.body.handler.name === 'searchname') {
         const drinkName = req.body.session.params.drinkname
         console.log("drink name", drinkName)
-        response.prompt.content = {
-          card: {
-            title: "Margarita",
-            subtitle: "Alcoholic drink",
-            text: "Instructions: Rub the rim of the glass with the lime slice to make the salt stick to it. Take care to moisten only the outer rim and sprinkle the salt on it. The salt should present to the lips of the imbiber and never mix into the cocktail. Shake the other ingredients with ice, then carefully pour into the glass. Ingredients: Tequila, Triple sec and lime.",
-            image: {
-              alt: "margarita",
-              height: 0,
-              url: "https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg",
-              width: 0
+        // search API
+        axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${drinkName}`)
+        .then(resp => {
+          if (resp.data.drinks && resp.data.drinks.length > 0) {
+            let ingredients = ""
+            for (let i = 1; i <= 15; i++ ) {
+              if (resp.data.drinks[0]["strIngredient" + i]) {
+                if (i > 1) {
+                  ingredients += ", "
+                }
+                ingredients += resp.data.drinks[0]["strIngredient" + i]
+              }
             }
-
+            response.prompt.content = {
+              card: {
+                title: resp.data.drinks[0].strDrink,
+                subtitle: resp.data.drinks[0].strAlcoholic,
+                text: "Instructions: " + resp.data.drinks[0].strInstructions + ". Ingredients: " + ingredients,
+                image: {
+                  alt: resp.data.drinks[0].strDrink,
+                  height: 0,
+                  url: resp.data.drinks[0].strDrinkThumb,
+                  width: 0
+                }
+              }
+            }
+            response.prompt.firstSimple = {
+              speech: `I've found ${resp.data.drinks[0].strDrink} to you! You will need ${ingredients} to prepare it.`,
+              text: ""
+            }
+    
+          } else {
+            // could not find any drinks
+            response.prompt.firstSimple = {
+              speech: `No drinks were found.`,
+              text: ""
+            }
           }
-        }
-        response.prompt.firstSimple = {
-          speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
-          text: ""
-        }
+          res.status(200).json(response)
 
-        res.status(200).json(response)
+        })
+        .catch(err => {
+          console.error(err)
+          res.status(500).json({message:"error talking to the API"})
+        })
 
       } else if (req.body.handler.name === 'searchingredient') {
         const ingredient = req.body.session.params.ingredient
         console.log("ingredient", ingredient)
-        response.prompt.content = {
-          card: {
-            title: "Margarita (by ingredient)",
-            subtitle: "Alcoholic drink",
-            text: "Instructions: Rub the rim of the glass with the lime slice to make the salt stick to it. Take care to moisten only the outer rim and sprinkle the salt on it. The salt should present to the lips of the imbiber and never mix into the cocktail. Shake the other ingredients with ice, then carefully pour into the glass. Ingredients: Tequila, Triple sec and lime.",
-            image: {
-              alt: "margarita",
-              height: 0,
-              url: "https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg",
-              width: 0
+        // search API
+        axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${ingredient}`)
+        .then(resp => {
+          if (resp.data.drinks && resp.data.drinks.length > 0) {
+            let ingredients = ""
+            for (let i = 1; i <= 15; i++ ) {
+              if (resp.data.drinks[0]["strIngredient" + i]) {
+                if (i > 1) {
+                  ingredients += ", "
+                }
+                ingredients += resp.data.drinks[0]["strIngredient" + i]
+              }
+            }
+            response.prompt.content = {
+              card: {
+                title: resp.data.drinks[0].strDrink,
+                subtitle: resp.data.drinks[0].strAlcoholic,
+                text: "Instructions: " + resp.data.drinks[0].strInstructions + ". Ingredients: " + ingredients,
+                image: {
+                  alt: resp.data.drinks[0].strDrink,
+                  height: 0,
+                  url: resp.data.drinks[0].strDrinkThumb,
+                  width: 0
+                }
+              }
+            }
+            response.prompt.firstSimple = {
+              speech: `I've found ${resp.data.drinks[0].strDrink} to you! You will need ${ingredients} to prepare it.`,
+              text: ""
+            }
+    
+          } else {
+            // could not find any drinks
+            response.prompt.firstSimple = {
+              speech: `No drinks were found.`,
+              text: ""
             }
           }
-        }
-        response.prompt.firstSimple = {
-          speech: "I've found Margarita to you! You will need Tequila, Triple sec and lime to prepare it.",
-          text: ""
-        }
-        res.status(200).json(response)
+          res.status(200).json(response)
+
+        })
+        .catch(err => {
+          res.status(500).json({message:"error talking to the API"})
+        })
 
       }
     }
+  } else {
+    res.status(400).json({message:"Could not find the proper parameters"})
   }
-  res.status(400).json({message:"Could not find the proper parameters"})
-  return;
   
 })
 
