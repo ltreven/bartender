@@ -111,6 +111,69 @@ router.post('/', (req, res, next) => {
           res.status(500).json({message:"error talking to the API"})
         })
 
+      } else if (req.body.handler.name === 'readinstructions') {
+        const drinkName = req.body.session.params.drinkname
+        console.log("drink name", drinkName)
+        // search API
+        axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${drinkName}`)
+        .then(resp => {
+          if (resp.data.drinks && resp.data.drinks.length > 0) {
+            response.prompt.firstSimple = {
+              speech: resp.data.drinks[0].strInstructions,
+              text: ""
+            }
+    
+          } else {
+            // could not find any drinks
+            response.prompt.firstSimple = {
+              speech: `No drinks were found.`,
+              text: ""
+            }
+          }
+          res.status(200).json(response)
+
+        })
+        .catch(err => {
+          console.error(err)
+          res.status(500).json({message:"error talking to the API"})
+        })
+      } else if (req.body.handler.name === 'readingredients') {
+        const drinkName = req.body.session.params.drinkname
+        console.log("drink name", drinkName)
+        // search API
+        axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${drinkName}`)
+        .then(resp => {
+          if (resp.data.drinks && resp.data.drinks.length > 0) {
+            let ingredients = ""
+            for (let i = 1; i <= 15; i++ ) {
+              if (resp.data.drinks[0]["strIngredient" + i]) {
+                if (i > 1) {
+                  ingredients += ", "
+                }
+                ingredients += resp.data.drinks[0]["strIngredient" + i]
+              }
+            }
+
+            response.prompt.firstSimple = {
+              speech: 'The ingredients are: ' + ingredients,
+              text: ""
+            }
+    
+          } else {
+            // could not find any drinks
+            response.prompt.firstSimple = {
+              speech: `No drinks were found.`,
+              text: ""
+            }
+          }
+          res.status(200).json(response)
+
+        })
+        .catch(err => {
+          console.error(err)
+          res.status(500).json({message:"error talking to the API"})
+        })
+
       }
     }
   } else {
