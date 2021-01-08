@@ -96,6 +96,7 @@ router.post('/', (req, res, next) => {
               speech: `I've found ${resp.data.drinks[0].strDrink} to you! You will need ${ingredients} to prepare it.`,
               text: ""
             }
+            response.session.params.drinkname = resp.data.drinks[0].strDrink
     
           } else {
             // could not find any drinks
